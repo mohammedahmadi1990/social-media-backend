@@ -36,18 +36,28 @@ router.post('/:postId', isAuthenticated, [
     }
 });
 
-// @route GET /:postId
-// @desc Get all comments for a post
+// @route GET /:postId/comments
+// @desc Retrieve all comments for a post
 // @access Private
-router.get('/:postId', isAuthenticated, async (req, res) => {
+router.get('/:postId/comments', isAuthenticated, async (req, res) => {
     try {
-        const comments = await Comment.find({ post: req.params.postId }).sort({ date: -1 });
+        const post = await Post.findById(req.params.postId);
+        if (!post) {
+            return res.status(404).json({ msg: 'Post not found' });
+        }
+
+        const comments = await Comment.find({ post: req.params.postId }).populate('user', 'username');
         res.json(comments);
+
     } catch (err) {
         console.error(err.message);
+        if (err.kind === 'ObjectId') {
+            return res.status(404).json({ msg: 'Post not found' });
+        }
         res.status(500).send('Server error');
     }
 });
+
 
 // @route DELETE /:postId/:commentId
 // @desc Delete a comment from a post

@@ -5,6 +5,9 @@ const PostSchema = new mongoose.Schema({
         type: mongoose.Schema.Types.ObjectId, 
         ref: 'user'
     },
+    username: { 
+        type: String
+    },
     text: {
         type: String,
         required: true

@@ -87,7 +87,7 @@ router.post('/login', [
         
         jwt.sign(payload, process.env.JWT_SECRET, { expiresIn: '1h' }, (err, token) => {
             if (err) throw err;
-            res.json({ token });
+            res.json({ token, username: user.username });
         });
 
     } catch (err) {
@@ -95,6 +95,7 @@ router.post('/login', [
         res.status(500).send('Server error');
     }
 });
+
 
 // @route GET /auth/logout
 // @desc Logout the user
